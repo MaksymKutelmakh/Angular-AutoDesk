@@ -3,10 +3,12 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ForgeViewerComponent } from './forge-viewer/forge-viewer.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ForgeViewerComponent
   ],
   imports: [
     BrowserModule,
