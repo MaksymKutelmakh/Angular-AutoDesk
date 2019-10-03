@@ -61,7 +61,7 @@ export class ForgeViewerComponent implements OnInit, OnDestroy {
   }
  
   private loadDocument() {
-    const urn = `urn%3Aadsk.viewing%3Afs.file%3AdXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bW9kZWxkZXJpdmF0aXZlL0E1LnppcA%2Foutput%2F1%2FA5.svf`;
+    const urn = `urn:dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6a3Z6ZzF6dnhxaWZ2MDFlbmFyZHB3dWF4Y3RqbTRkZzAtbGVhcm4vd29vZGVuLXJvY2tpbmctY2hhaXIuRkJY`;
  
     Autodesk.Viewing.Document.load(urn, (doc) => {
       const geometryItems = Autodesk.Viewing.Document.getSubItemsWithProperties(doc.getRootItem(), {type: 'geometry'}, true);
@@ -72,8 +72,15 @@ export class ForgeViewerComponent implements OnInit, OnDestroy {
  
       this.viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, this.geometryLoaded);
       this.viewer.addEventListener(Autodesk.Viewing.SELECTION_CHANGED_EVENT, (event) => this.selectionChanged(event));
- 
-      this.viewer.load(doc.getViewablePath(geometryItems[0]));
+      
+      // Choose any of the avialble viewables
+      var initialViewable = geometryItems[0];
+      var svfUrl = doc.getViewablePath(initialViewable);
+      var modelOptions = {
+          sharedPropertyDbPath: doc.getPropertyDbPath()
+      };
+      this.viewer.start(svfUrl, modelOptions);
+//       this.viewer.load(doc.getViewablePath(geometryItems[0]));
     }, errorMsg => console.error);
   }
  
@@ -83,6 +90,7 @@ export class ForgeViewerComponent implements OnInit, OnDestroy {
     viewer.removeEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, this.geometryLoaded);
     viewer.setLightPreset(8);
     viewer.fitToView();
+    viewer.loadExtension('Autodesk.Viewing.ZoomWindow')
     // viewer.setQualityLevel(false, true); // Getting rid of Ambientshadows to false to avoid blackscreen problem in Viewer.
   }
  
@@ -97,8 +105,8 @@ export class ForgeViewerComponent implements OnInit, OnDestroy {
   }
  
   private getAccessToken(onSuccess: any) {
-    const  access_token = "eyJhbGciOiJIUzI1NiIsImtpZCI6Imp3dF9zeW1tZXRyaWNfa2V5X2RldiJ9.eyJjbGllbnRfaWQiOiJjWTFqcm1rQXhPSVptbnNsOVhYN0puVURtVEVETGNGeCIsImV4cCI6MTQ4NzU2NzgwMSwic2NvcGUiOlsiZGF0YTpyZWFkIl0sImF1ZCI6Imh0dHBzOi8vYXV0b2Rlc2suY29tL2F1ZC9qd3RleHAzMCIsImp0aSI6InJZcEZZTURyemtMOWZ1ZFdKSVVlVkxucGNWT29BTDg0dFpKbXlmZ29ORW1MakF0YVVtWktRWU1lYUR2UGlnNGsifQ.uzNexXCeu4efGPKGGhHdKxoJDXHAzLb28B2nSjrq_ys";
-    const expires_in  = 1799;
+    const  access_token = "eyJhbGciOiJIUzI1NiIsImtpZCI6Imp3dF9zeW1tZXRyaWNfa2V5In0.eyJjbGllbnRfaWQiOiJLVlpHMXpWeFFpRlYwMWVOQXJkUHd1QXhjdEptNGRnMCIsImV4cCI6MTU3MDEwNDc5Nywic2NvcGUiOlsidmlld2FibGVzOnJlYWQiXSwiYXVkIjoiaHR0cHM6Ly9hdXRvZGVzay5jb20vYXVkL2p3dGV4cDYwIiwianRpIjoiNlJtcTQzMlJ1alFoVTBxa01QQndiNmN2c3k4SFBIbkc5UXJyUU9VM1Y4RHhXRW9HZHlVMjVaQ1RPYkZRRkU4ViJ9.5DfaTv-jwrVMX3kj9fl77mi9tcWOqEtRziEpL7QfzqM";
+    const expires_in  = 3599;
     onSuccess(access_token, expires_in);
   }
 }
