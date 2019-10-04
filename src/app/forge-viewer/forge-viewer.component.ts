@@ -43,6 +43,31 @@ export class ForgeViewerComponent implements OnInit, OnDestroy {
     };
  
     this.viewer = new Autodesk.Viewing.Viewer3D(this.viewerContainer.nativeElement, {}); // Headless viewer
+    
+     this.toolBar = new Autodesk.Viewing.UI.ToolBar('toolBarContainer',options);
+    var button1 = new Autodesk.Viewing.UI.Button('show-env-bg-button');
+    button1.onClick = function(e) {
+        this.viewer.setEnvMapBackground(true);
+    };
+    button1.addClass('show-env-bg-button');
+    button1.setToolTip('Show Environment');
+  
+    // Button 2
+    var button2 = new Autodesk.Viewing.UI.Button('hide-env-bg-button');
+    button2.onClick = function(e) {
+        this.viewer.setEnvMapBackground(false);
+    };
+    button2.addClass('hide-env-bg-button');
+    button2.setToolTip('Hide Environment');
+  
+    // SubToolbar
+    this.subToolbar = new Autodesk.Viewing.UI.ControlGroup('my-custom-toolbar');
+    this.subToolbar.addControl(button1);
+    this.subToolbar.addControl(button2);
+    console.log(this.subToolbar)
+    this.toolBar.addControl(this.subToolbar);
+    console.log(this.toolBar)
+   
   
     // Check if the viewer has already been initialised - this isn't the nicest, but we've set the env in our
     // options above so we at least know that it was us who did this!
